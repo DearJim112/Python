@@ -82,6 +82,7 @@ Lf=138*0.5#前悬长度
 Lb=138*0.5
 Ltw=70*0.9
 yaw=0
+eps_speed1=1
 while True:
     clock.tick(FPS)
     screen.blit(background, (0, 0))
@@ -127,11 +128,11 @@ while True:
                 speed2 = font_small.render("speed=4km/h", True, RED)
                 speed=1
             if ((200 > mousex > 0) & (60 > mousey > 40)):
-                EPS_speed1=0.1
+                eps_speed1= 0.1
                 EPS_speed1 = font_small.render("EPS_speed=1°/s",True,RED)
                 EPS_speed2 = font_small.render("EPS_speed=10°/s", True, BLACK)
             if ((400 > mousex > 200) & (60 > mousey > 40)):
-                EPS_speed1 = 1
+                eps_speed1 = 1
                 EPS_speed1 = font_small.render("EPS_speed=1°/s",True,BLACK)
                 EPS_speed2 = font_small.render("EPS_speed=10°/s", True, RED)
         if event.type == pygame.QUIT:
@@ -186,11 +187,11 @@ while True:
         newcar.image = pygame.transform.rotate(car.image, angle=yaw * 180 / pi)
         # newcar.rect = newcar.image.get_rect().center
     if pressed_key[pygame.K_LEFT]:
-        degree += ddegree
+        degree += eps_speed1
         if degree>40:
             degree=40
     if pressed_key[pygame.K_RIGHT]:
-        degree -= ddegree
+        degree -= eps_speed1
         if degree<-40:
             degree=-40
         # if event.type ==pygame.
