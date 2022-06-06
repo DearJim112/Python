@@ -24,8 +24,8 @@ Y = 250
 pi = 3.141526
 angd = 0
 
-pygame.draw.arc(screen, RED, [X - 100, Y - 100, 200, 200], angd - pi / 2, angd + pi, 3)
-pygame.draw.arc(screen, GREEN, [X, Y, 100, 100], angd, angd + pi / 2, 3)
+# pygame.draw.arc(screen, RED, [X - 100, Y - 100, 200, 200], angd - pi / 2, angd + pi, 3)
+# pygame.draw.arc(screen, GREEN, [X, Y, 100, 100], angd, angd + pi / 2, 3)
 
 # 图相的绘制
 player=pygame.image.load("R-C.png")
@@ -33,27 +33,35 @@ play_rect=player.get_rect()
 x, y = 250, 250
 
 
-# class PLAYER:
-#
-#     def __int__(self):
-#         self.image = pygame.image.load("R-C.png")
-#         # self.rect= self.image.get_rect(top=200,left =200)
-#         # self.rect = self.image.get_rect(center=(x, y))
-#         self.rect = self.image.get_rect()
+class PLAYER:
+
+    def __int__(self):
+        x,y=(width/2,height/2)
+        self.image = pygame.image.load("R-C.png")
+        self.rect = self.image.get_rect(center=(x,y))
 
 
-# player = PLAYER()
+player1 = PLAYER()
+print(player1)
+print(player1.rect)
 background = pygame.image.load("park.jpg")
 
+enemy=pygame.image.load("R-C.png")
+enemy_rect=enemy.get_rect()
+# enemy=PLAYER()
+# enemires=pygame.sprite.Group()
+# enemires.add(enemy)
 while True:
     clock.tick(FPS)
     screen.blit(background, (0, 0))
     screen.blit(player, (x,y))
+    screen.blit(enemy,(1,1))
+    # screen.blit(player1.image, player1.rect)
     # screen.blit(player.image, player.rect)
     # y-=1
-
+    # x,y=pygame.mouse.get_pos()
     for event in pygame.event.get():
-        print(event)
+        # print(event)
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -67,4 +75,8 @@ while True:
     if pressed_key[pygame.K_RIGHT]:
         x += 1
         # if event.type ==pygame.
+    # pygame.sprite.spritecollide(play_rect, enemy_rect, True,False)
+    # enemies = pygame.sprite.spritecollide(player, enemy, False)
+    # if pygame.sprite.spritecollideany(player,enemy,False):
+    #     print("碰撞了")
     pygame.display.update()
