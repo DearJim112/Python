@@ -104,9 +104,9 @@ while True:
     # print(x,y)
     seta_f = degree / 180 * pi
     R = Lb / (abs(tan(seta_f)) + 1e-15)
-    if (yaw + seta_f)<0:
-        alaf = (yaw + seta_f) % (-2 * pi)
-        x0 = x - R * sin(alaf)
+    if seta_f<0:
+        alaf = (yaw + seta_f) % (2 * pi)
+        x0 = x + R * sin(alaf)
         y0 = y + R * cos(alaf)
     else:
         alaf = (yaw + seta_f) % (2 * pi)
