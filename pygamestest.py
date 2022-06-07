@@ -24,8 +24,8 @@ Y = 250
 pi = 3.141526
 angd = 0
 
-# pygame.draw.arc(screen, RED, [X - 100, Y - 100, 200, 200], angd - pi / 2, angd + pi, 3)
-# pygame.draw.arc(screen, GREEN, [X, Y, 100, 100], angd, angd + pi / 2, 3)
+pygame.draw.arc(screen, RED, [X - 100, Y - 100, 200, 200], angd - pi / 2, angd + pi, 3)
+pygame.draw.arc(screen, GREEN, [X, Y, 100, 100], angd, angd + pi / 2, 3)
 
 # 图相的绘制
 player=pygame.image.load("R-C.png")

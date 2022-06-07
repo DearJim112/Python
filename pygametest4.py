@@ -71,7 +71,7 @@ newcar.image = pygame.transform.rotate(car.image, angle=0)
 speed=0.5
 ddegree=0.1
 #C车辆之心
-Lr=138*0.3 #后悬长度
+Lr=138*0.5 #后悬长度
 #beta滑移角
 #seta_r=后轮偏角
 #o 转向圆心
@@ -79,19 +79,42 @@ Lf=138*0.5#前悬长度
 #R 转向半径
 # fai 偏航角
 # seta_f前轮偏角
-Lb=138*0.5
+Lb=138
 Ltw=70*0.9
 yaw=0
-eps_speed1=1
+eps_speed1=40/540/60*10
+x0=0
+y0=0
+R=0
+degree=0
+seta_f=0
 while True:
     clock.tick(FPS)
     screen.blit(background, (0, 0))
+    print([x0, y0, 2 * R, 2 * R])
+    # pygame.draw.arc(screen, RED, [x0, y0,  2*R, 2*R], 180 - degree - yaw * 180 / pi, 180, 3)
+
+    # print(R)
     screen.blit(speed1, (0, 0))
     screen.blit(speed2, (200, 0))
     screen.blit(EPS_speed1, (0, 40))
     screen.blit(EPS_speed2, (200, 40))
     screen.blit(wheel_deg, (0, 400))
     screen.blit(steering_deg, (0, 430))
+    # print(x,y)
+    seta_f = degree / 180 * pi
+    R = Lb / (abs(tan(seta_f)) + 1e-15)
+    if (yaw + seta_f)<0:
+        alaf = (yaw + seta_f) % (-2 * pi)
+        x0 = x - R * sin(alaf)
+        y0 = y + R * cos(alaf)
+    else:
+        alaf = (yaw + seta_f) % (2 * pi)
+        x0 = x - R * sin(alaf)
+        y0 = y - R * cos(alaf)
+    pygame.draw.arc(screen, RED, [x0-R, y0-R, 2 * R, 2 * R],0, 2*pi, 3)
+    # pygame.draw.arc(screen, RED, [x, y, 150, 150], 0, 2 * pi, 3)
+    # pygame.draw.arc(screen, RED, [x, y,  R,  R], 0, pi, 3)
     wheel_deg = font_big.render(str(degree), True, BLUE)
     steering_deg = font_big.render(str(degree*540/40), True, BLUE)
     # screen.blit(car.image, car.rect)
@@ -113,7 +136,7 @@ while True:
     # print('degree=',degree)
     # print('yaw=',yaw/pi*180)
     for event in pygame.event.get():
-        print(event)
+        # print(event)
         if event.type == pygame.MOUSEBUTTONUP:
             # print('up')
             mousex,mousey=pygame.mouse.get_pos()
@@ -128,13 +151,13 @@ while True:
                 speed2 = font_small.render("speed=4km/h", True, RED)
                 speed=1
             if ((200 > mousex > 0) & (60 > mousey > 40)):
-                eps_speed1= 0.1
-                EPS_speed1 = font_small.render("EPS_speed=1°/s",True,RED)
-                EPS_speed2 = font_small.render("EPS_speed=10°/s", True, BLACK)
+                eps_speed1= 40/540/60*10
+                EPS_speed1 = font_small.render("EPS_speed=10°/s",True,RED)
+                EPS_speed2 = font_small.render("EPS_speed=100°/s", True, BLACK)
             if ((400 > mousex > 200) & (60 > mousey > 40)):
-                eps_speed1 = 1
-                EPS_speed1 = font_small.render("EPS_speed=1°/s",True,BLACK)
-                EPS_speed2 = font_small.render("EPS_speed=10°/s", True, RED)
+                eps_speed1 = 40/54/60*10
+                EPS_speed1 = font_small.render("EPS_speed=10°/s",True,BLACK)
+                EPS_speed2 = font_small.render("EPS_speed=100°/s", True, RED)
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -151,6 +174,9 @@ while True:
         y = y - dy
         x = x + dx
         yaw = yaw + dyaw
+        # print(seta_f)
+
+
         # a = 2 * speed * tan(-degree / 180 * pi) / (2 * Lb + Ltw * tan(abs(degree / 180 * pi)))
         # yaw = yaw + a
         # dx = -speed * cos(a) -Lb*sin(a)
@@ -175,6 +201,22 @@ while True:
         x=x+dx
         yaw=yaw+dyaw
 
+        # if 0<alaf<pi/2:
+        #     print('第一象限')
+        #     x0=x-R*sin(alaf)
+        #     y0=y-R*cos(alaf)
+        # elif pi/2<alaf<pi:
+        #     print('第2象限')
+        #     x0=x+R*cos(alaf)
+        #     y0=y-R*sin(alaf)
+        # elif pi<alaf<3*pi/2:
+        #     print('第3象限')
+        #     print(alaf/pi*180)
+        #     x0=x+R*cos(alaf)
+        #     y0=y+R*sin(alaf)
+        # elif 3*pi/2<alaf<2*pi:
+        #     x0=x+R*cos(alaf)
+        #     y0=y-R*sin(alaf)
         # a = 2 * speed * tan(degree / 180 * pi) / (2 * Lb + Ltw * tan(abs(degree / 180 * pi)))
         # yaw = yaw + a
         # dx = speed * cos(yaw)
@@ -195,9 +237,11 @@ while True:
         if degree<-40:
             degree=-40
         # if event.type ==pygame.
-    blocks_hit_list =pygame.sprite.spritecollide(newcar, enemires, False)
-    for hit in blocks_hit_list:
+    # blocks_hit_list =pygame.sprite.spritecollide(newcar, enemires, False)
+    blocks_hit_list =pygame.sprite.spritecollideany(newcar,enemires)
+    if blocks_hit_list!=None:
         screen.blit(game_over,(200,200))
+
     if pressed_key[pygame.K_s]:
         x,y=width/2,height/2+40
         yaw=0
